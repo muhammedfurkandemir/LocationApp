@@ -15,23 +15,28 @@ namespace LocationApp.Business
         public CoordinatePostgresqlManager(IConfiguration configuration)
         {
             _npgsqlConnection = new NpgsqlConnection(
-                connectionString: configuration.GetConnectionString("PostgresConnection"));
-            _npgsqlConnection.Open();
+                connectionString: configuration.GetConnectionString("PostgresConnection"));            
         }
 
         public Coordinate Add(Coordinate coordinate)
         {
+            if (coordinate is null)
+            {
+                return null;
+            }
+
             using var command = new NpgsqlCommand();
             command.Connection = _npgsqlConnection;
-            var id = new Random().Next();
-            command.CommandText = "INSERT INTO coordinates (id, name, coordinate_x, coordinate_y) " +
-                "VALUES (@id, @name, @x, @y)";
-
-            command.Parameters.AddWithValue("@id", id);
+            _npgsqlConnection.Open();
+            command.CommandText = "INSERT INTO coordinates ( name, coordinate_x, coordinate_y) " +
+                "VALUES (@name, @x, @y) RETURNING id";
             command.Parameters.AddWithValue("@name", coordinate.Name);
             command.Parameters.AddWithValue("@x", coordinate.X);
             command.Parameters.AddWithValue("@y", coordinate.Y);
             command.ExecuteNonQuery();
+            var id = (int)command.ExecuteScalar();
+            coordinate.Id = id;
+            _npgsqlConnection.Close();
             return coordinate;
         }
 
@@ -39,9 +44,11 @@ namespace LocationApp.Business
         {
             using var command = new NpgsqlCommand();
             command.Connection = _npgsqlConnection;
+            _npgsqlConnection.Open();
             command.CommandText = $"DELETE FROM coordinates WHERE id = @id";
             command.Parameters.AddWithValue("@id", id);
             command.ExecuteNonQuery();
+            _npgsqlConnection.Close();
             return true;
         }
 
@@ -49,9 +56,10 @@ namespace LocationApp.Business
         {
             using var command = new NpgsqlCommand();
             command.Connection = _npgsqlConnection;
+            _npgsqlConnection.Open();
             command.CommandText = $"SELECT * FROM coordinates WHERE id = @id";
-            using NpgsqlDataReader reader = command.ExecuteReader();
             command.Parameters.AddWithValue("@id", id);
+            using NpgsqlDataReader reader = command.ExecuteReader();           
             var result = new Coordinate();
             if (reader.Read())
             {
@@ -60,6 +68,7 @@ namespace LocationApp.Business
                 result.X = (double)reader["coordinate_x"];
                 result.Y = (double)reader["coordinate_y"];
             }
+            _npgsqlConnection.Close();
             return result;
         }
 
@@ -67,6 +76,8 @@ namespace LocationApp.Business
         {
             using var command = new NpgsqlCommand();
             command.Connection = _npgsqlConnection;
+            _npgsqlConnection.Open();
+
             command.CommandText = "SELECT * FROM coordinates";
             using NpgsqlDataReader reader = command.ExecuteReader();
             var result = new List<Coordinate>();
@@ -80,6 +91,7 @@ namespace LocationApp.Business
                     Y = (double)reader["coordinate_y"]
                 });
             }
+            _npgsqlConnection.Close();
             return result;
         }
 
@@ -87,6 +99,8 @@ namespace LocationApp.Business
         {
             using var command = new NpgsqlCommand();
             command.Connection = _npgsqlConnection;
+            _npgsqlConnection.Open();
+
             command.CommandText = $"UPDATE coordinates " +
                 $"SET name = '@name', coordinate_x = @x, coordinate_y = @y WHERE id = @id";
             command.Parameters.AddWithValue("@id", id);
@@ -94,6 +108,8 @@ namespace LocationApp.Business
             command.Parameters.AddWithValue("@x", coordinate.X);
             command.Parameters.AddWithValue("@y", coordinate.Y);
             command.ExecuteNonQuery();
+            _npgsqlConnection.Close();
+
             return coordinate;
         }
     }

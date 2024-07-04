@@ -65,10 +65,27 @@ namespace LocationApp.Controllers
         }
 
         [HttpPost]
-        public IActionResult Add([FromBody] Coordinate coordinate)
+        public Response Add([FromBody] Coordinate coordinate)
         {
-            var entity = _coordinateService.Add(coordinate);
-            return CreatedAtAction(nameof(GetById), new { id = entity.Id }, new Response { Data = entity, IsSuccess = true });
+            var _response = new Response();
+            try
+            {
+                var entity = _coordinateService.Add(coordinate);
+                if (entity is null)
+                {
+                    _response.Message = Messages.NotFoundId;
+                    return _response;
+                }
+                _response.Data = entity;
+                _response.IsSuccess = true;
+                return _response;
+            }
+            catch (Exception)
+            {
+                _response.Message = Messages.UnexpectedError;
+                return _response;
+            }
+            
         }
 
         [HttpPut("{id}")]

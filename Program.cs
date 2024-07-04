@@ -17,7 +17,7 @@ namespace LocationApp
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            builder.Services.AddSingleton<ICoordinateService,CoordinatePostgresqlManager>();
+            builder.Services.AddScoped<ICoordinateService,CoordinatePostgresqlManager>();
 
             var app = builder.Build();
 
