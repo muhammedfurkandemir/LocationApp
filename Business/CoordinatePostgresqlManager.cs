@@ -2,6 +2,7 @@
 using LocationApp.Entities;
 using Microsoft.Extensions.Configuration;
 using Npgsql;
+using System.Windows.Input;
 using System.Xml.Linq;
 
 namespace LocationApp.Business
@@ -38,7 +39,8 @@ namespace LocationApp.Business
         {
             using var command = new NpgsqlCommand();
             command.Connection = _npgsqlConnection;
-            command.CommandText = $"DELETE FROM coordinates WHERE id = {id}";
+            command.CommandText = $"DELETE FROM coordinates WHERE id = @id";
+            command.Parameters.AddWithValue("@id", id);
             command.ExecuteNonQuery();
             return true;
         }
@@ -47,8 +49,9 @@ namespace LocationApp.Business
         {
             using var command = new NpgsqlCommand();
             command.Connection = _npgsqlConnection;
-            command.CommandText = $"SELECT * FROM coordinates WHERE id = {id}";
+            command.CommandText = $"SELECT * FROM coordinates WHERE id = @id";
             using NpgsqlDataReader reader = command.ExecuteReader();
+            command.Parameters.AddWithValue("@id", id);
             var result = new Coordinate();
             if (reader.Read())
             {
@@ -84,7 +87,12 @@ namespace LocationApp.Business
         {
             using var command = new NpgsqlCommand();
             command.Connection = _npgsqlConnection;
-            command.CommandText = $"UPDATE coordinates SET name = '{coordinate.Name}', coordinate_x = {coordinate.X}, coordinate_y = {coordinate.Y} WHERE id = {id}";
+            command.CommandText = $"UPDATE coordinates " +
+                $"SET name = '@name', coordinate_x = @x, coordinate_y = @y WHERE id = @id";
+            command.Parameters.AddWithValue("@id", id);
+            command.Parameters.AddWithValue("@name", coordinate.Name);
+            command.Parameters.AddWithValue("@x", coordinate.X);
+            command.Parameters.AddWithValue("@y", coordinate.Y);
             command.ExecuteNonQuery();
             return coordinate;
         }

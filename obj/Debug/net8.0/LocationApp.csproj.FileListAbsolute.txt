@@ -31,3 +31,4 @@ C:\Users\demir\Desktop\Root\Back-end\Projects\LocationApp\LocationApp\obj\Debug\
 C:\Users\demir\Desktop\Root\Back-end\Projects\LocationApp\LocationApp\obj\Debug\net8.0\LocationApp.genruntimeconfig.cache
 C:\Users\demir\Desktop\Root\Back-end\Projects\LocationApp\LocationApp\obj\Debug\net8.0\ref\LocationApp.dll
 C:\Users\demir\Desktop\Root\Back-end\Projects\LocationApp\LocationApp\bin\Debug\net8.0\Npgsql.dll
+C:\Users\demir\Desktop\Root\Back-end\Projects\LocationApp\LocationApp\obj\Debug\net8.0\LocationApp.sourcelink.json
