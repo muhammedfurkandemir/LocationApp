@@ -1,18 +1,19 @@
 ﻿using LocationApp.Entities;
+using LocationApp.Utilities.Results;
 
 namespace LocationApp.Business.Contracts
 {
     public interface ICoordinateService
     {
-        List<Coordinate> GetAll();
+        Response GetAll();
 
-        Coordinate Get(int id);
+        Response Get(int id);
 
-        Coordinate Add(Coordinate coordinate);
+        Response Add(Coordinate coordinate);
 
-        bool Delete(int id);
+        Response Delete(int id);
 
-        Coordinate Update(int id, Coordinate coordinate);
+        Response Update(int id, Coordinate coordinate);
     }
 }
 

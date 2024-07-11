@@ -1,6 +1,11 @@
 
 using LocationApp.Business;
 using LocationApp.Business.Contracts;
+using LocationApp.DataAccess.Abstract;
+using LocationApp.DataAccess.Concrete;
+using LocationApp.DataAccess.UnitOfWork;
+using LocationApp.Utilities.EntityFramework;
+using Microsoft.EntityFrameworkCore;
 
 namespace LocationApp
 {
@@ -17,7 +22,13 @@ namespace LocationApp
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            builder.Services.AddScoped<ICoordinateService,CoordinatePostgresqlManager>();
+            builder.Services.AddDbContext<LocationContext>(options =>
+            options.UseNpgsql(builder.Configuration.GetConnectionString("PostgresConnection")));
+
+            builder.Services.AddScoped<ICoordinateService,CoordinateManager>();
+            builder.Services.AddScoped<ICoordinateRepository, CoordinateRepository>();
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
 
             var app = builder.Build();
 
@@ -32,7 +43,10 @@ namespace LocationApp
 
             app.UseAuthorization();
 
-
+            app.UseCors(builder =>
+            {
+                builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+            });
             app.MapControllers();
 
             app.Run();

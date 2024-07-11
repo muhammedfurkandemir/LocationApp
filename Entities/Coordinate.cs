@@ -1,13 +1,15 @@
-﻿namespace LocationApp.Entities
+﻿using LocationApp.Entities.Abstract;
+
+namespace LocationApp.Entities
 {
-    public class Coordinate
+    public class Coordinate:IEntity
     {
-        public int Id { get; set; }
+        public int id { get; set; }
+        
+        public string name { get; set; }
 
-        public string Name { get; set; }
+        public double coordinate_x { get; set; }
 
-        public double X { get; set; }
-
-        public double Y { get; set; }
+        public double coordinate_y { get; set; }
     }
 }

@@ -1,76 +1,100 @@
-﻿using LocationApp.Business.Contracts;
+﻿using LocationApp.Business.Constants;
+using LocationApp.Business.Contracts;
+using LocationApp.DataAccess.Abstract;
+using LocationApp.DataAccess.UnitOfWork;
 using LocationApp.Entities;
+using LocationApp.Utilities.Results;
 
 namespace LocationApp.Business
 {
-    public class CoordinateManager
-        //: ICoordinateService
+    public class CoordinateManager : ICoordinateService
     {
-        public readonly static List<Coordinate> coordinateList = new List<Coordinate>();
-        public Coordinate Add(Coordinate coordinate)
+        public IUnitOfWork _unitOfWork;
+
+
+        public CoordinateManager(IUnitOfWork unitOfWork)
         {
-            var point = new Coordinate();
-
-            var random = new Random();
-
-            point.Id = random.Next();
-            point.X = coordinate.X;
-            point.Y = coordinate.Y;
-            point.Name = coordinate.Name;
-
-            coordinateList.Add(point);
-            
-            return point;
+            _unitOfWork = unitOfWork;
         }
 
-        public bool Delete(int id)
+        public Response Add(Coordinate coordinate)
         {
-            var deletedEntity = coordinateList.FirstOrDefault(x => x.Id == id);
-            if (deletedEntity != null)
+            try
             {
-                return false;
+                _unitOfWork.CoordinateRepository.Add(coordinate);
+                _unitOfWork.Save();
+                return new Response() { IsSuccess = true, Message = Messages.AdditionSuccess };
             }
-            else
+            catch (Exception ex)
             {
-                coordinateList.Remove(deletedEntity);
-                return true;
-            }
-
-        }
-
-        public Coordinate Get(int id)
-        {
-            var entity = coordinateList.FirstOrDefault(x => x.Id == id);
-            if (entity != null)
-            {
-                return null;
-            }
-            else
-            {
-                return entity;
+                return new Response() { Message = ex.Message };
             }
         }
 
-        public List<Coordinate> GetAll()
+        public Response Delete(int id)
         {
-            return coordinateList;
+            try
+            {
+                var entity = _unitOfWork.CoordinateRepository.Get(c => c.id == id);
+                if (entity is null)
+                {
+                    return new Response() { Message = Messages.NotFound };
+                }
+                _unitOfWork.CoordinateRepository.Delete(entity);
+                _unitOfWork.Save();
+                return new Response() { IsSuccess = true, Message = Messages.DeletionSuccess };
+            }
+            catch (Exception ex)
+            {
+                return new Response() { Message = ex.Message };
+            }
         }
 
-        public Coordinate Update(int id, Coordinate coordinate)
+        public Response Get(int id)
         {
-            var updatedEntity = coordinateList.FirstOrDefault(x => x.Id == id);
-
-            if (updatedEntity is null)
+            try
             {
-                Console.WriteLine("null geldi");
-                return null;
+                var entity = _unitOfWork.CoordinateRepository.Get(c => c.id == id);
+                if(entity is null)
+                {
+                    return new Response() { Message = Messages.NotFound };
+                }
+                return new Response() { Data=entity, IsSuccess = true, Message = Messages.DeletionSuccess };
             }
-            else
+            catch (Exception ex)
             {
-                updatedEntity.Name = coordinate.Name;
-                updatedEntity.X = coordinate.X;
-                updatedEntity.Y = coordinate.Y;
-                return updatedEntity;
+                return new Response() { Message = ex.Message };
+            }
+        }
+
+        public Response GetAll()
+        {
+            try
+            {
+                var entities = _unitOfWork.CoordinateRepository.GetAll();
+                return new Response() { Data = entities, IsSuccess = true, Message = Messages.IsSuccess };
+            }
+            catch (Exception ex)
+            {
+                return new Response() { Message = ex.Message };
+            }
+        }
+
+        public Response Update(int id, Coordinate coordinate)
+        {
+            try
+            {
+                var entity = _unitOfWork.CoordinateRepository.Get(c => c.id == id);
+                if (entity is null)
+                {
+                    return new Response() { Message = Messages.NotFound };
+                }
+                _unitOfWork.CoordinateRepository.Update(coordinate);
+                return new Response() { IsSuccess = true, Message = Messages.UpdateIsSuccess };
+            }
+            catch (Exception ex)
+            {
+                return new Response() { Message = ex.Message };
             }
         }
     }

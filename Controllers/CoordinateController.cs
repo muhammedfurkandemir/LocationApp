@@ -19,119 +19,33 @@ namespace LocationApp.Controllers
             _coordinateService = coordinateService;
         }
         [HttpGet]
-        public Response Get()
+        public Response GetAll()
         {
-            var _response = new Response();
-            try
-            {
-                var coordinateList = _coordinateService.GetAll();
-                if (coordinateList.Count < 1)
-                {
-                    _response.Message = Messages.NoValueOfObject;
-                    return _response;
-                }
-                _response.Data = coordinateList;
-                _response.IsSuccess = true;
-                return _response;
-            }
-            catch (Exception ex)
-            {
-                _response.Message = Messages.UnexpectedError;
-                return _response;
-            }
+           return _coordinateService.GetAll();
         }
 
         [HttpGet("{id:int}")]
         public Response GetById([FromRoute] int id)
         {
-            var _response = new Response();
-            try
-            {
-                var coordinate = _coordinateService.Get(id);
-                if (coordinate == null)
-                {
-                    _response.Message = Messages.NotFoundId;
-                    return _response;
-                }
-                _response.Data = coordinate;
-                _response.IsSuccess = true;
-                return _response;
-            }
-            catch (Exception ex)
-            {
-                _response.Message = Messages.UnexpectedError;
-                return _response;
-            }
+            return _coordinateService.Get(id);
         }
 
         [HttpPost]
         public Response Add([FromBody] Coordinate coordinate)
         {
-            var _response = new Response();
-            try
-            {
-                var entity = _coordinateService.Add(coordinate);
-                if (entity is null)
-                {
-                    _response.Message = Messages.NotFoundId;
-                    return _response;
-                }
-                _response.Data = entity;
-                _response.IsSuccess = true;
-                return _response;
-            }
-            catch (Exception)
-            {
-                _response.Message = Messages.UnexpectedError;
-                return _response;
-            }
-            
+            return _coordinateService.Add(coordinate);            
         }
 
         [HttpPut("{id}")]
         public Response UpdateById([FromRoute] int id, [FromBody] Coordinate coordinate)
         {
-            var _response = new Response();
-            try
-            {
-                var entity = _coordinateService.Update(id, coordinate);
-                if (entity == null)
-                {
-                    _response.Message = Messages.NotFoundId;
-                    return _response;
-                }
-                _response.Data = entity;
-                    _response.IsSuccess = true;
-                return _response;
-            }
-            catch (Exception ex)
-            {
-                _response.Message = Messages.UnexpectedError;
-                return _response;
-            }
+           return _coordinateService.Update(id, coordinate);
         }
 
         [HttpDelete("{id}")]
         public Response DeleteById([FromRoute] int id)
         {
-            var _response = new Response();
-            try
-            {
-                var entityIsDeleted = _coordinateService.Delete(id);
-                if (!entityIsDeleted)
-                {
-                    _response.Message = Messages.NotFoundId;
-                    return _response;
-                }
-                _response.Data = entityIsDeleted;
-                _response.IsSuccess = true;
-                return _response;
-            }
-            catch (Exception)
-            {
-                _response.Message = Messages.UnexpectedError;
-                return _response;
-            }
+            return _coordinateService.Delete(id);
         }
 
     }

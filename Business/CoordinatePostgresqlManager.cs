@@ -7,7 +7,8 @@ using System.Xml.Linq;
 
 namespace LocationApp.Business
 {
-    public class CoordinatePostgresqlManager : ICoordinateService
+    public class CoordinatePostgresqlManager 
+        //: ICoordinateService
     {
 
         private readonly NpgsqlConnection _npgsqlConnection;
@@ -30,12 +31,12 @@ namespace LocationApp.Business
             _npgsqlConnection.Open();
             command.CommandText = "INSERT INTO coordinates ( name, coordinate_x, coordinate_y) " +
                 "VALUES (@name, @x, @y) RETURNING id";
-            command.Parameters.AddWithValue("@name", coordinate.Name);
-            command.Parameters.AddWithValue("@x", coordinate.X);
-            command.Parameters.AddWithValue("@y", coordinate.Y);
+            command.Parameters.AddWithValue("@name", coordinate.name);
+            command.Parameters.AddWithValue("@x", coordinate.coordinate_x);
+            command.Parameters.AddWithValue("@y", coordinate.coordinate_y);
             command.ExecuteNonQuery();
             var id = (int)command.ExecuteScalar();
-            coordinate.Id = id;
+            coordinate.id = id;
             _npgsqlConnection.Close();
             return coordinate;
         }
@@ -63,10 +64,10 @@ namespace LocationApp.Business
             var result = new Coordinate();
             if (reader.Read())
             {
-                result.Id = (int)reader["id"];
-                result.Name = reader["name"] as string;
-                result.X = (double)reader["coordinate_x"];
-                result.Y = (double)reader["coordinate_y"];
+                result.id = (int)reader["id"];
+                result.name = reader["name"] as string;
+                result.coordinate_x = (double)reader["coordinate_x"];
+                result.coordinate_y = (double)reader["coordinate_y"];
             }
             _npgsqlConnection.Close();
             return result;
@@ -85,10 +86,10 @@ namespace LocationApp.Business
             {
                 result.Add(new Coordinate
                 {
-                    Id = (int)reader["id"],
-                    Name = reader["name"] as string,
-                    X = (double)reader["coordinate_x"],
-                    Y = (double)reader["coordinate_y"]
+                    id = (int)reader["id"],
+                    name = reader["name"] as string,
+                    coordinate_x = (double)reader["coordinate_x"],
+                    coordinate_y = (double)reader["coordinate_y"]
                 });
             }
             _npgsqlConnection.Close();
@@ -104,9 +105,9 @@ namespace LocationApp.Business
             command.CommandText = $"UPDATE coordinates " +
                 $"SET name = '@name', coordinate_x = @x, coordinate_y = @y WHERE id = @id";
             command.Parameters.AddWithValue("@id", id);
-            command.Parameters.AddWithValue("@name", coordinate.Name);
-            command.Parameters.AddWithValue("@x", coordinate.X);
-            command.Parameters.AddWithValue("@y", coordinate.Y);
+            command.Parameters.AddWithValue("@name", coordinate.name);
+            command.Parameters.AddWithValue("@x", coordinate.coordinate_x);
+            command.Parameters.AddWithValue("@y", coordinate.coordinate_y);
             command.ExecuteNonQuery();
             _npgsqlConnection.Close();
 
