@@ -5,10 +5,10 @@ using Npgsql;
 using System.Windows.Input;
 using System.Xml.Linq;
 
-namespace LocationApp.Business
+namespace LocationApp.Business.Old
 {
-    public class CoordinatePostgresqlManager 
-        //: ICoordinateService
+    public class CoordinatePostgresqlManager
+    //: ICoordinateService
     {
 
         private readonly NpgsqlConnection _npgsqlConnection;
@@ -16,7 +16,7 @@ namespace LocationApp.Business
         public CoordinatePostgresqlManager(IConfiguration configuration)
         {
             _npgsqlConnection = new NpgsqlConnection(
-                connectionString: configuration.GetConnectionString("PostgresConnection"));            
+                connectionString: configuration.GetConnectionString("PostgresConnection"));
         }
 
         public Coordinate Add(Coordinate coordinate)
@@ -60,7 +60,7 @@ namespace LocationApp.Business
             _npgsqlConnection.Open();
             command.CommandText = $"SELECT * FROM coordinates WHERE id = @id";
             command.Parameters.AddWithValue("@id", id);
-            using NpgsqlDataReader reader = command.ExecuteReader();           
+            using NpgsqlDataReader reader = command.ExecuteReader();
             var result = new Coordinate();
             if (reader.Read())
             {

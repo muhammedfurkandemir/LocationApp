@@ -7,11 +7,14 @@ namespace LocationApp.DataAccess.UnitOfWork
     {
         private readonly LocationContext _locationContext;
         public ICoordinateRepository CoordinateRepository { get; }
+        public IGeolocRepository GeolocRepository { get; }
 
-        public UnitOfWork(LocationContext locationContext, ICoordinateRepository coordinateRepository)
+        public UnitOfWork(LocationContext locationContext, ICoordinateRepository coordinateRepository,
+            IGeolocRepository lineRepository)
         {
             _locationContext = locationContext;
             CoordinateRepository = coordinateRepository;
+            GeolocRepository = lineRepository;
         }
 
         public void Dispose()

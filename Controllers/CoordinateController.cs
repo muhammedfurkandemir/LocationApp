@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LocationApp.Controllers
 {
-    [Route("api/[controller]/[Action]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class CoordinateController : ControllerBase
     {
@@ -18,6 +18,7 @@ namespace LocationApp.Controllers
         {
             _coordinateService = coordinateService;
         }
+
         [HttpGet]
         public Response GetAll()
         {
@@ -33,13 +34,13 @@ namespace LocationApp.Controllers
         [HttpPost]
         public Response Add([FromBody] Coordinate coordinate)
         {
-            return _coordinateService.Add(coordinate);            
+            return _coordinateService.Add(coordinate);
         }
 
         [HttpPut("{id}")]
         public Response UpdateById([FromRoute] int id, [FromBody] Coordinate coordinate)
         {
-           return _coordinateService.Update(id, coordinate);
+            return _coordinateService.Update(id, coordinate);
         }
 
         [HttpDelete("{id}")]

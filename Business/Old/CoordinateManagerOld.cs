@@ -1,10 +1,10 @@
 ﻿using LocationApp.Business.Contracts;
 using LocationApp.Entities;
 
-namespace LocationApp.Business
+namespace LocationApp.Business.Old
 {
     public class CoordinateManagerOld
-        //: ICoordinateService
+    //: ICoordinateService
     {
         public readonly static List<Coordinate> coordinateList = new List<Coordinate>();
         public Coordinate Add(Coordinate coordinate)
@@ -19,7 +19,7 @@ namespace LocationApp.Business
             point.name = coordinate.name;
 
             coordinateList.Add(point);
-            
+
             return point;
         }
 

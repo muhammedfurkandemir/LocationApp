@@ -11,5 +11,14 @@ namespace LocationApp.Utilities.EntityFramework
         }
 
         public DbSet<Coordinate> coordinates { get; set; }
+
+        public DbSet<Geoloc> lines { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Geoloc>()
+                .Property(l => l.geometry)
+                .HasColumnType("geometry");
+        }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace LocationApp.Business
+﻿namespace LocationApp.Business.Old
 {
     public class StudentService
     {
